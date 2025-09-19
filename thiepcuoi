@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiệp Mời Cưới - Duy Sơn & Ngọc Huyền</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Beige & Gold -->
+    <!-- Application Structure Plan: A narrative, single-page scroll design to transform the static invitation into an engaging digital experience. The flow is Hero -> Event Details -> Countdown -> Map -> Gallery -> Closing. This structure is chosen to guide the user from the emotional announcement to the practical details in an intuitive, story-like manner, which is more effective for a wedding than a data-driven dashboard. -->
+    <!-- Visualization & Content Choices: Event details are presented in clear HTML cards for scannability. A dynamic JS countdown timer builds anticipation. An interactive embedded map provides utility for guests. A photo gallery personalizes the experience. This mix of static info and interactive elements serves the dual goals of informing guests and celebrating the couple. No charts are needed as there is no quantitative data. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FAF9F6;
+        }
+        h1, h2, h3, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-beige {
+            background-color: #F5F5DC;
+        }
+        .text-brown-dark {
+            color: #8B4513;
+        }
+        .border-gold {
+            border-color: #D4AF37;
+        }
+        .bg-gold-light {
+            background-color: #FFF8E1;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #D4AF37;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-brown-dark antialiased">
+
+    <main class="container mx-auto max-w-4xl">
+        <div id="welcome-screen" class="min-h-screen flex flex-col justify-center items-center p-6 text-center">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 font-serif">Thiệp Mời</h1>
+            <p class="text-lg mb-6">Bạn thân mến, hãy nhập tên của bạn để mở thiệp mời nhé!</p>
+            <input type="text" id="guest-name-input" class="p-3 text-center border-b-2 border-brown-dark outline-none bg-transparent w-full max-w-sm mb-6 text-xl" placeholder="Ví dụ: Tên của bạn" />
+            <button id="open-invite-btn" class="bg-brown-dark text-white font-semibold px-8 py-3 rounded-full hover:bg-brown-dark/90 transition-colors">Mở Thiệp</button>
+        </div>
+
+        <div id="invitation-content" class="hidden">
+            <header class="text-center min-h-screen flex flex-col justify-center items-center p-6 relative fade-in">
+                <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1523438943918-3c6c0b39535b?q=80&w=1887&auto=format&fit=crop');"></div>
+                <div class="relative z-10">
+                    <p class="text-lg md:text-xl tracking-wider mb-4"><span id="invitation-heading">Trân trọng kính mời</span></p>
+                    <p class="text-2xl md:text-3xl font-serif italic" id="guest-name-display"></p>
+                    <h1 class="text-5xl md:text-7xl font-bold mb-2 mt-4">Vũ Duy Sơn</h1>
+                    <p class="text-3xl md:text-5xl font-serif mb-4">&</p>
+                    <h1 class="text-5xl md:text-7xl font-bold mb-8">Nguyễn Ngọc Huyền</h1>
+                    <div class="w-24 h-px bg-gold-dark mx-auto my-6"></div>
+                    <p class="text-lg md:text-2xl font-serif italic">sẽ về chung một nhà vào</p>
+                    <p class="text-xl md:text-3xl font-semibold mt-2 tracking-widest">27.09.2025</p>
+                </div>
+            </header>
+
+            <section id="details" class="py-16 px-6 fade-in">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold mb-2">Thông Tin Hôn Lễ</h2>
+                    <p class="text-lg italic">Sự hiện diện của bạn là niềm vinh hạnh cho gia đình chúng tôi.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-lg shadow-lg text-center border-t-4 border-gold">
+                        <div class="mb-4 text-4xl">💍</div>
+                        <h3 class="text-2xl font-semibold mb-3">Lễ Thành Hôn</h3>
+                        <p class="text-md">Lễ thành hôn của cặp đôi sẽ được tổ chức trang trọng tại tư gia, trong không khí ấm cúng cùng gia đình và những người thân thương nhất.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg text-center border-t-4 border-gold">
+                        <div class="mb-4 text-4xl">🍽️</div>
+                        <h3 class="text-2xl font-semibold mb-3">Tiệc Cưới Thân Mật</h3>
+                        <p class="font-bold text-lg">07:00 sáng, Thứ Bảy, 27/09/2025</p>
+                        <p class="mt-2 text-md">tại <span class="font-semibold">Trung tâm văn hóa thôn Hội Yên, xã Chi Lăng Nam, huyện Thanh Miện, tỉnh Hải Dương</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="countdown" class="bg-beige py-16 px-6 text-center fade-in">
+                <h2 class="text-4xl font-bold mb-8">Thời Gian Chờ Đợi</h2>
+                <div id="countdown-timer" class="flex justify-center space-x-4 md:space-x-8 text-center">
+                    <div>
+                        <div id="days" class="text-4xl md:text-6xl font-bold">00</div>
+                        <div class="text-sm md:text-lg">Ngày</div>
+                    </div>
+                     <div>
+                        <div id="hours" class="text-4xl md:text-6xl font-bold">00</div>
+                        <div class="text-sm md:text-lg">Giờ</div>
+                    </div>
+                     <div>
+                        <div id="minutes" class="text-4xl md:text-6xl font-bold">00</div>
+                        <div class="text-sm md:text-lg">Phút</div>
+                    </div>
+                     <div>
+                        <div id="seconds" class="text-4xl md:text-6xl font-bold">00</div>
+                        <div class="text-sm md:text-lg">Giây</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="money-gift" class="py-16 px-6 text-center fade-in">
+                <h2 class="text-4xl font-bold mb-8">Gửi Mừng Cưới</h2>
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center border-t-4 border-gold">
+                    <p class="text-md mb-4">Để thuận tiện cho khách mời ở xa, bạn có thể gửi lời chúc và tiền mừng trực tuyến. Mọi đóng góp của bạn là lời chúc phúc quý giá cho chúng tôi.</p>
+                    <div class="grid md:grid-cols-2 gap-8 mt-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2">Chú rể: Vũ Duy Sơn</h3>
+                            <div class="flex flex-col items-center">
+                                <img src="z7030157699704_6173bbe21197f89da6d55ba011d30997.jpg" alt="QR Code chú rể" class="w-36 h-36 rounded-lg mb-2">
+                                <p class="text-sm">Ngân hàng: MB BANK</p>
+                                <p class="text-sm font-semibold">STK: 6107102002</p>
+                                <p class="text-sm">Nội dung: [Tên bạn] - Mừng cưới</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2">Cô dâu: Nguyễn Ngọc Huyền</h3>
+                             <div class="flex flex-col items-center">
+                                <img src="z7030160917865_d3fd00b20875ca28c9cec9e014bf1280.jpg" alt="QR Code cô dâu" class="w-36 h-36 rounded-lg mb-2">
+                                <p class="text-sm">Ngân hàng: MB BANK</p>
+                                <p class="text-sm font-semibold">STK: 0986923981</p>
+                                <p class="text-sm">Nội dung: [Tên bạn] - Mừng cưới</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="location" class="py-16 px-6 text-center fade-in">
+                <h2 class="text-4xl font-bold mb-8">Địa Điểm Tổ Chức</h2>
+                <div class="w-full h-96 rounded-lg shadow-lg overflow-hidden">
+                    <iframe src="https://maps.google.com/maps?q=P6JQ+H5W,+ĐT396,+Chi+Lăng+Nam,+Thanh+Miện,+Hải+Dương,+Việt+Nam&t=&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </section>
+
+            <section id="gemini-features" class="py-16 px-6 fade-in">
+                <div class="grid md:grid-cols-1 gap-8">
+                    <div class="bg-white p-8 rounded-lg shadow-lg border-t-4 border-gold text-center flex flex-col items-center">
+                        <h3 class="text-2xl font-semibold mb-4">Sổ lưu bút & Lời chúc ✨</h3>
+                        <p class="text-md mb-4 text-center">Hãy để lại lời chúc tốt đẹp nhất cho cô dâu chú rể. Lời chúc của bạn sẽ được lưu giữ lại mãi mãi.</p>
+                        <div class="w-full flex flex-col gap-4">
+                            <textarea id="wish-input" class="w-full p-2 border rounded-md resize-none h-24" placeholder="Viết lời chúc của bạn..."></textarea>
+                            <div class="flex justify-between items-center">
+                               <button id="generate-wish-btn" class="bg-gold-light text-brown-dark font-semibold px-4 py-2 rounded-full hover:bg-gold-light/90 transition-colors">
+                                   Gợi ý lời chúc
+                               </button>
+                               <button id="send-wish-btn" class="bg-brown-dark text-white font-semibold px-6 py-2 rounded-full hover:bg-brown-dark/90 transition-colors">
+                                   Gửi lời chúc
+                               </button>
+                           </div>
+                        </div>
+                        <div id="wishes-list" class="mt-8 w-full">
+                            <h4 class="text-xl font-semibold mb-4">Lời chúc từ khách mời</h4>
+                            <div id="wishes-container" class="space-y-4"></div>
+                            <div id="wishes-loading" class="spinner mt-4 hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="gallery" class="py-16 px-6 fade-in">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold mb-2">Khoảnh Khắc Đáng Nhớ</h2>
+                     <p class="text-lg italic">"Nơi tình yêu bắt đầu..."</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="rounded-lg overflow-hidden shadow-lg"><img src="AB DSC07701.jpg" alt="Ảnh cưới cô dâu chú rể" class="w-full h-full object-cover"></div>
+                    <div class="rounded-lg overflow-hidden shadow-lg col-span-1 md:col-span-2"><img src="My New Project_01.jpg" alt="Ảnh cưới tình cảm" class="w-full h-full object-cover"></div>
+                    <div class="rounded-lg overflow-hidden shadow-lg col-span-1 md:col-span-2"><img src="My New Project_08.jpg" alt="Khoảnh khắc hạnh phúc" class="w-full h-full object-cover"></div>
+                    <div class="rounded-lg overflow-hidden shadow-lg"><img src="My New Project_09.jpg" alt="Tình yêu vĩnh cửu" class="w-full h-full object-cover"></div>
+                </div>
+            </section>
+
+            <footer class="text-center py-12 px-6 fade-in">
+                <h2 class="text-3xl font-serif mb-4">Trân trọng cảm ơn!</h2>
+                <p class="text-lg">#SonHuyenWedding</p>
+            </footer>
+        </div>
+    </main>
+
+    <audio controls autoplay loop style="display:none;">
+        <source src="https://ia800806.us.archive.org/16/items/BachAirOnAGString/Bach%20-%20Air%20on%20a%20G%20String.mp3" type="audio/mpeg">
+        Trình duyệt của bạn không hỗ trợ thẻ audio.
+    </audio>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        document.getElementById('open-invite-btn').addEventListener('click', () => {
+            const guestName = document.getElementById('guest-name-input').value;
+            if (guestName.trim() !== '') {
+                document.getElementById('welcome-screen').classList.add('hidden');
+                document.getElementById('invitation-content').classList.remove('hidden');
+                document.getElementById('guest-name-display').innerText = guestName;
+                document.getElementById('invitation-heading').innerText = 'Trân trọng kính mời';
+            }
+        });
+
+        const countdownDate = new Date("September 27, 2025 07:00:00").getTime();
+        const countdownFunction = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById("days").innerText = String(days).padStart(2, '0');
+            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            if (distance < 0) {
+                clearInterval(countdownFunction);
+                document.getElementById("countdown-timer").innerHTML = "<div class='text-3xl font-bold'>Chúc Mừng Hạnh Phúc!</div>";
+            }
+        }, 1000);
+        
+        const faders = document.querySelectorAll('.fade-in');
+        const appearOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    return;
+                } else {
+                    entry.target.classList.add('visible');
+                    appearOnScroll.unobserve(entry.target);
+                }
+            });
+        }, appearOptions);
+
+        faders.forEach(fader => {
+            appearOnScroll.observe(fader);
+        });
+
+        let db;
+        let auth;
+        let userId;
+
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        if (Object.keys(firebaseConfig).length) {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    setupWishListener();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Firebase auth error:", error);
+                    }
+                }
+            });
+        }
+
+        const wishInput = document.getElementById('wish-input');
+        const sendWishBtn = document.getElementById('send-wish-btn');
+        const generateWishBtn = document.getElementById('generate-wish-btn');
+        const wishesContainer = document.getElementById('wishes-container');
+        const wishesLoading = document.getElementById('wishes-loading');
+
+        const callGeminiApi = async (prompt) => {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: 'Act as a helpful and creative fashion stylist or a warm, heartfelt friend writing a wedding wish. Respond in a single paragraph, in Vietnamese.' }] }
+            };
+
+            let retryCount = 0;
+            const maxRetries = 3;
+            const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+            while (retryCount < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.status === 429) {
+                        retryCount++;
+                        await delay(Math.pow(2, retryCount) * 1000);
+                        continue;
+                    }
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text || 'Không thể tạo gợi ý lúc này, vui lòng thử lại sau.';
+                    return text;
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    retryCount++;
+                    await delay(Math.pow(2, retryCount) * 1000);
+                }
+            }
+            return 'Đã xảy ra lỗi, vui lòng thử lại sau.';
+        };
+
+        generateWishBtn.addEventListener('click', async () => {
+            wishInput.placeholder = 'Đang tạo lời chúc...';
+            wishInput.disabled = true;
+            const prompt = "Viết một lời chúc đám cưới ngắn gọn, ấm áp và ý nghĩa cho cặp đôi trong thiệp mời cưới.";
+            const wishText = await callGeminiApi(prompt);
+            wishInput.value = wishText;
+            wishInput.disabled = false;
+            wishInput.placeholder = 'Viết lời chúc của bạn...';
+        });
+
+        const sendWish = async (content) => {
+            if (!db || !userId) {
+                console.error("Database not ready or user not authenticated.");
+                return;
+            }
+            if (!content.trim()) {
+                return;
+            }
+            try {
+                const wishCollectionRef = collection(db, `artifacts/${appId}/public/data/wedding_wishes`);
+                await addDoc(wishCollectionRef, {
+                    content: content,
+                    timestamp: serverTimestamp(),
+                    userId: userId
+                });
+                wishInput.value = '';
+            } catch (error) {
+                console.error("Error adding document: ", error);
+            }
+        };
+
+        sendWishBtn.addEventListener('click', () => {
+            sendWish(wishInput.value);
+        });
+
+        const setupWishListener = () => {
+            if (!db) return;
+            wishesLoading.classList.remove('hidden');
+            const q = query(collection(db, `artifacts/${appId}/public/data/wedding_wishes`));
+            onSnapshot(q, (querySnapshot) => {
+                const wishes = [];
+                querySnapshot.forEach((doc) => {
+                    wishes.push(doc.data());
+                });
+                wishesContainer.innerHTML = '';
+                wishes.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)).forEach(wish => {
+                    const wishElement = document.createElement('div');
+                    wishElement.className = 'bg-beige p-4 rounded-lg shadow-md';
+                    wishElement.innerHTML = `<p class="italic">${wish.content}</p><p class="text-sm text-right text-gray-500 mt-2">${new Date(wish.timestamp?.toDate()).toLocaleString('vi-VN')}</p>`;
+                    wishesContainer.appendChild(wishElement);
+                });
+                wishesLoading.classList.add('hidden');
+            }, (error) => {
+                console.error("Error fetching wishes:", error);
+                wishesLoading.classList.add('hidden');
+            });
+        };
+    </script>
+</body>
+</html>
